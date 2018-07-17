@@ -1,0 +1,47 @@
+Rascunhos de comandos do git para facilitar a memória
+
+ssh-keygen
+git clone endereço
+git push origin master
+
+Em ordem:
+
+git init
+git config --global user.email "arthur.lorencini@gmail.com"
+git config --global user.name "mrtuckie"
+git status
+git add *.*
+ou git add .
+git commit -m "texto do commit"
+git push origin master
+
+
+
+
+
+git diff (ver oq foi alterado)
+git log
+git log -p ver uma porrada
+git log -p -1 (ou numero qualquer) para ver os logs mais recentes
+git log --pretty=oneline
+git commit --amend -m "texto"
+git reset HEAD <file>
+git checkout -- <file>
+git add/rm para adicionar ou remover
+git tag -a v1.0 chave_do_commit -m "texto"
+git show v1.0
+git checkout v0.0
+git tag -d <tag> deleta a tag
+git checkout master
+git checkout -b teste cria a branch e vai pra ela
+git merge branch1 (vai mandar para branch1) // quando vc quer dar o update
+ da merge 
+git branch -d branch1 vc deleta a branch
+
+criando repo remoto
+
+git init --bare começando a criar um repositório pra acesso remoto
+git clone file:////nome_do_server/pasta/pasta
+git clone file:///nome_do_server/pasta/pasta nomeNovoDaPasta
+
+git remote
