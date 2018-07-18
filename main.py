@@ -40,7 +40,7 @@ not_pin = 5  # pino da not com npn
 led_test_pin = 40
 led2_test_pin = 38
 cte_on = 240 # tempo on sem detectar (em segundos)
-sizeLimit = 30 # em MB (ou Mb, não lembro
+sizeLimit = 1000 # em MB (ou Mb, não lembro
 sensor_time = 4.7 # tempo (s) do sensor pir. Pode-se alterar o sensor para diminuir o tempo de "debounce"
 
 
