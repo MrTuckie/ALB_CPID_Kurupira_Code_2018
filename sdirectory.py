@@ -1,5 +1,5 @@
 import os
-def get_size(start_path = '/home/pi/Desktop/Kurupira/multi/fotos_teste'):
+def get_size(start_path = '/home/pi/Desktop/Kurupira/multi/'):
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(start_path):
         for f in filenames:
@@ -7,4 +7,4 @@ def get_size(start_path = '/home/pi/Desktop/Kurupira/multi/fotos_teste'):
             total_size += os.path.getsize(fp)
     return total_size/(1024**2)
 
-print get_size()
+#print (get_size())
