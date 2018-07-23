@@ -19,7 +19,8 @@ def video():  # Função para gravar um video de "n"-segundos
     camera = picamera.PiCamera()
     try:
         print("gravando video...")
-        camera.start_recording("/home/pi/Desktop/Kurupira/multi/videos_teste/%s.mjpeg" % strftime("%d_%m_%y_%H:%M:%S"))
+        camera.start_recording("/home/pi/Desktop/Kurupira/multi/videos_teste/%s.h264" % strftime("%d_%m_%y_%H:%M:%S"))
+        # pode trocar o mjpeg por h264
         camera.wait_recording(5)
         camera.stop_recording()
     finally:
