@@ -6,6 +6,7 @@ from time import strftime
 
 
 def fotos():
+    "Tira algumas fotos em um determinado tempo"
     camera = picamera.PiCamera() # Cria um objeto tipo picamera
     try: # Tenta tirar as "n"-fotos com a data e hora
         for x in range(4):
@@ -15,7 +16,8 @@ def fotos():
     finally:
         camera.close()
         
-def video():  # Função para gravar um video de "n"-segundos
+def video():
+    "Função para gravar um video de n-segundos"
     camera = picamera.PiCamera()
     try:
         print("gravando video...")
