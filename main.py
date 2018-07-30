@@ -14,6 +14,7 @@ import RPi.GPIO as GPIO
 import picamera as pic
 import camera
 import sdirectory as sdir
+import dht11
 #import mfile
 
 
@@ -52,6 +53,9 @@ GPIO.setup(led_test_pin, GPIO.OUT) # Pino de saída para um led de test
 GPIO.setup(led2_test_pin, GPIO.OUT) # Para ver se o código ainda está rodando
 GPIO.output(led2_test_pin,1)        # Poderia colocar piscando sem parar para ver se está ligado ainda
 
+# Chamando a função do sensor dht11
+dht11.sensor_dht_once()
+
 
 # Primeiras fotos e vídeo
 
@@ -66,6 +70,7 @@ else:
 
 
 while(1):
+    dht11.sensor_dht_once()
     b = int(sdir.get_size())
     #print b
 
