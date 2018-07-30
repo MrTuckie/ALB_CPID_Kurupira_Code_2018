@@ -15,7 +15,7 @@ import picamera as pic
 import camera
 import sdirectory as sdir
 import dht11
-#import mfile
+import mfile
 
 
 # Setup-------------------------------------------
@@ -70,7 +70,8 @@ else:
 
 
 while(1):
-    dht11.sensor_dht_once()
+    #dht11.sensor_dht_once()
+    mfile.dht11_log()
     b = int(sdir.get_size())
     #print b
 

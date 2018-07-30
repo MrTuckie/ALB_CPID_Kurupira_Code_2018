@@ -19,6 +19,7 @@ print ("Lendo os valores de temperatura e umidade");
 def sensor_dht_loop():
     while(1):
         # Efetua a leitura do sensor
+        print('chamou dht loop')
         umid, temp = Adafruit_DHT.read_retry(sensor, pino_sensor);
         #print(type(umid))
         #print(type(temp))
@@ -37,6 +38,7 @@ def sensor_dht_loop():
             
 def sensor_dht_once():
     # Efetua a leitura do sensor
+    print('chamou dht once')
     umid, temp = Adafruit_DHT.read_retry(sensor, pino_sensor);
     #print(type(umid))
     #print(type(temp))
@@ -50,7 +52,41 @@ def sensor_dht_once():
         
     else:
         # Mensagem de erro de comunicacao com o sensor
-        print("Falha ao ler dados do DHT11 !!!")            
+        print("Falha ao ler dados do DHT11 !!!")
+        
+def sensor_dht_umid_once():
+    # Efetua a leitura do sensor
+    print('chamou umid once')
+    umid, temp = Adafruit_DHT.read_retry(sensor, pino_sensor);
+    #print(type(umid))
+    #print(type(temp))
+    # Caso leitura esteja ok, mostra os valores na tela
+    if umid is not None and temp is not None:
+        #print(umid)
+        #print(temp)
+        return (umid)
+        time.sleep(1)
+        
+    else:
+        # Mensagem de erro de comunicacao com o sensor
+        print("Falha ao ler dados do DHT11 !!!")
+
+def sensor_dht_temp_once():
+    # Efetua a leitura do sensor
+    print('chamou temp once')
+    umid, temp = Adafruit_DHT.read_retry(sensor, pino_sensor);
+    #print(type(umid))
+    #print(type(temp))
+    # Caso leitura esteja ok, mostra os valores na tela
+    if umid is not None and temp is not None:
+        #print(umid)
+        #print(temp)
+        return (temp)
+        
+        
+    else:
+        # Mensagem de erro de comunicacao com o sensor
+        print("Falha ao ler dados do DHT11 !!!") 
 
 ##
 ##
