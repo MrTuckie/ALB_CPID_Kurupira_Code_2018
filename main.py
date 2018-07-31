@@ -8,20 +8,27 @@ import time
 from time import strftime
 from time import sleep
 
+# Direcionando a pasta de importação
+
+import sys
+sys.path.insert(0, '/home/pi/Desktop/Kurupira/modules')
+
 import os
 import RPi.GPIO as GPIO
 
-import picamera as pic
+# Módulos criados 
 import camera
 import sdirectory as sdir
 import dht11
 import mfile
 
 
+
 # Setup-------------------------------------------
 
 # Testes iniciais
 print ("Início de programa...")
+mfile.on_log()
 a = strftime("%d/%m/%y - %H:%M:%S") # Apenas teste
 print (a)
 #sdir.get_size()
@@ -41,9 +48,9 @@ not_pin = 5  # pino da not com npn
 led_test_pin = 40
 led2_test_pin = 38
 cte_on = 240 # tempo on sem detectar (em segundos)
-sizeLimit = 1000 # em MB (ou Mb, não lembro
+sizeLimit = 500 # em MB (ou Mb, não lembro)
 sensor_time = 4.7 # tempo (s) do sensor pir. Pode-se alterar o sensor para diminuir o tempo de "debounce"
-
+dht_time = 60 # tempo (s) entre uma leitura e outra do dht11
 
 GPIO.setup(pir_pin, GPIO.IN)  # Pino de entrada para ler a saída do sensor PIR
 GPIO.setup(not_pin, GPIO.IN)   # Este Pino é o pino que ficará conectado a "Not" do Sensor PIR
@@ -70,11 +77,13 @@ else:
 
 
 while(1):
-    #dht11.sensor_dht_once()
-    mfile.dht11_log()
+    # Atualiza o tamanho atual da pasta multi
     b = int(sdir.get_size())
-    #print b
-
+    
+    if int(time.time()-last) > dht_time:
+        mfile.dht11_log()
+        last = time.time()
+        
     if b > sizeLimit: # Se passou do limite de fotos estipulado
         print ('Lotado')
         file = open('/home/pi/Desktop/Kurupira/testfile.txt','w')
@@ -84,25 +93,23 @@ while(1):
         os.system('/home/pi/Desktop/Kurupira/bash-script/kill_python.sh')
 
     i = GPIO.input(pir_pin)
-    #j = GPIO.input(not_pin)
-    sleep(0.5)
 
     if i == 1: # Movimento detectado
-        #print (j)
         print ('Movimento detectado')
         sleep(sensor_time)
         i = GPIO.input(pir_pin) # Atualiza a leitura do pino na variável
+        
         if i == 1:
             print ('Movimento novamente detectado')
             camera.fotos()
             b = int(sdir.get_size())
             print ("Espaço da pasta de multimidia: %dMB" % b)
             i = GPIO.input(pir_pin)
+            
             if i == 1:
                 camera.video()
                 b = int(sdir.get_size())
                 print ("Espaço da pasta de multimidia: %dMB" % b)
-                None
 
         last = time.time() # Atualiza o tempo de detecção
 
@@ -110,5 +117,7 @@ while(1):
         print ('Sem movimento')
 
         if int(time.time()-last) > cte_on: # Se o intervalo sem movimento for maior que "n" segs
-            time.sleep(1)
+            mfile.off_log()
+            time.sleep(2)
             os.system("shutdown 0")   # Desliga o RSP
+    sleep(0.5) # Para não ler infinitamente rápido
