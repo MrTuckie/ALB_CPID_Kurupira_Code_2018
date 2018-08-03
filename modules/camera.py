@@ -9,8 +9,8 @@ def fotos():
     "Tira algumas fotos em um determinado tempo"
     camera = picamera.PiCamera() # Cria um objeto tipo picamera
     try: # Tenta tirar as "n"-fotos com a data e hora
-        for x in range(4):
-            time.sleep(0.3)
+        for x in range(5):
+            time.sleep(0.2)
             camera.capture('/home/pi/Desktop/Kurupira/multi/fotos_teste/%s.jpg' % strftime("%d_%m_%y_%H:%M:%S"))
             print("tirando foto #%d" % (x+1))
     finally:
