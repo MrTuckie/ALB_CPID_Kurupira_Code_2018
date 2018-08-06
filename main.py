@@ -22,6 +22,7 @@ import sdirectory as sdir
 import dht11
 import mfile
 
+#from gpiozero import Buzzer, InputDevice
 
 
 # Setup-------------------------------------------
@@ -47,6 +48,7 @@ pir_pin = 11 # pino do sensor
 not_pin = 5  # pino da not com npn
 led_test_pin = 40
 led2_test_pin = 38
+#no_rain = InputDevice(18)
 cte_on = 300 # tempo on sem detectar (em segundos)
 sizeLimit = 500 # em MB (ou Mb, não lembro)
 sensor_time = 4.7 # tempo (s) do sensor pir. Pode-se alterar o sensor para diminuir o tempo de "debounce"
@@ -82,6 +84,10 @@ else:
 while(1):
     # Atualiza o tamanho atual da pasta multi
     b = int(sdir.get_size())
+    
+    
+##    if not no_rain.is_active:
+##        print("It's raining - get the washing in!")
     
     if int(time.time()- last_dht) > dht_time:
         print('dhtlog')
