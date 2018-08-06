@@ -47,10 +47,13 @@ pir_pin = 11 # pino do sensor
 not_pin = 5  # pino da not com npn
 led_test_pin = 40
 led2_test_pin = 38
-cte_on = 240 # tempo on sem detectar (em segundos)
+cte_on = 300 # tempo on sem detectar (em segundos)
 sizeLimit = 500 # em MB (ou Mb, não lembro)
 sensor_time = 4.7 # tempo (s) do sensor pir. Pode-se alterar o sensor para diminuir o tempo de "debounce"
-dht_time = 60 # tempo (s) entre uma leitura e outra do dht11
+dht_time = 120 # tempo (s) entre uma leitura e outra do dht11
+size_log_time = 30
+last_dht = time.time()
+last_size = time.time()
 
 GPIO.setup(pir_pin, GPIO.IN)  # Pino de entrada para ler a saída do sensor PIR
 GPIO.setup(not_pin, GPIO.IN)   # Este Pino é o pino que ficará conectado a "Not" do Sensor PIR
@@ -62,7 +65,7 @@ GPIO.output(led2_test_pin,1)        # Poderia colocar piscando sem parar para ve
 
 # Chamando a função do sensor dht11
 dht11.sensor_dht_once()
-
+mfile.dht11_log()
 
 # Primeiras fotos e vídeo
 
@@ -80,16 +83,24 @@ while(1):
     # Atualiza o tamanho atual da pasta multi
     b = int(sdir.get_size())
     
-    if int(time.time()-last) > dht_time:
+    if int(time.time()- last_dht) > dht_time:
+        print('dhtlog')
         mfile.dht11_log()
-        last = time.time()
+        last_dht = time.time()
+        
+    if int(time.time()- last_size) > size_log_time:
+        print('sizelog')
+        mfile.size_log(sizeLimit)
+        last_size = time.time()
         
     if b > sizeLimit: # Se passou do limite de fotos estipulado
-        print ('Lotado')
-        file = open('/home/pi/Desktop/Kurupira/testfile.txt','w')
-        file.write('%d ' % b)
-        file.write('em MB (ou mb)\nLimite de espaço para multimídia atingido!')
-        file.close()
+        print('dhtlog')
+        mfile.dht11_log()
+        
+        print('sizelog')
+        mfile.size_log(sizeLimit)
+        
+        sleep(10)
         os.system('/home/pi/Desktop/Kurupira/bash-script/kill_python.sh')
 
     i = GPIO.input(pir_pin)
@@ -116,8 +127,8 @@ while(1):
     else: # Caso sem movimento
         print ('Sem movimento')
 
-        if int(time.time()-last) > cte_on: # Se o intervalo sem movimento for maior que "n" segs
+        if int(time.time()- last) > cte_on: # Se o intervalo sem movimento for maior que "n" segs
             mfile.off_log()
-            time.sleep(2)
+            #time.sleep(10)
             os.system("shutdown 0")   # Desliga o RSP
     sleep(0.5) # Para não ler infinitamente rápido

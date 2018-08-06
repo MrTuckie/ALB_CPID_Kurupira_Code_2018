@@ -1,7 +1,6 @@
 import dht11
 import time
 from time import strftime
-
 import sdirectory
 
 def dht11_log():
@@ -16,6 +15,7 @@ def dht11_log():
 def size_log(max_size):
     b = sdirectory.get_size()
     file = open('/home/pi/Desktop/Kurupira/logs/size_log.txt','a')
+    file.write(strftime("%d/%m/%y - %H:%M:%S\n"))
     file.write('%d ' % b)
     file.write('em MB (ou mb)\n')
     if b >= max_size:
@@ -32,3 +32,5 @@ def on_log():
     file = open('/home/pi/Desktop/Kurupira/logs/power_log.txt','a')
     file.write(strftime("Ligou: %d/%m/%y - %H:%M:%S\n"))
     file.close()
+    
+
