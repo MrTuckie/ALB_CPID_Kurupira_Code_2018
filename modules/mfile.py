@@ -25,6 +25,7 @@ def size_log(max_size):
 
 def off_log():
     file = open('/home/pi/Desktop/Kurupira/multi/logs/power_log.txt','a')
+    time.sleep(5)
     file.write(strftime("Desligou: %d/%m/%y - %H:%M:%S\n"))
     file.close()
     
@@ -33,4 +34,12 @@ def on_log():
     file.write(strftime("Ligou: %d/%m/%y - %H:%M:%S\n"))
     file.close()
     
+def rain_log(state):
+    file = open('/home/pi/Desktop/Kurupira/multi/logs/rain_log.txt','a')
+    if state == 0:
+        file.write(strftime("Molhado: %d/%m/%y - %H:%M:%S\n"))
+    else:
+        file.write(strftime("Seco: %d/%m/%y - %H:%M:%S\n"))
+    file.close()
 
+    file.close()

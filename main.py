@@ -29,10 +29,12 @@ import mfile
 
 # Testes iniciais
 print ("Início de programa...")
+print (strftime("%d/%m/%y - %H:%M:%S"))
+
 mfile.on_log()
-a = strftime("%d/%m/%y - %H:%M:%S") # Apenas teste
-print (a)
+
 #sdir.get_size()
+
 last = time.time()  # Atualiza o tempo de detecção pela primeira vez
 b = int(sdir.get_size())
 print ("Espaço da pasta de multimidia: %dMB" % b)
@@ -48,19 +50,24 @@ pir_pin = 11 # pino do sensor
 not_pin = 5  # pino da not com npn
 led_test_pin = 40
 led2_test_pin = 38
-#no_rain = InputDevice(18)
-cte_on = 300 # tempo on sem detectar (em segundos)
+rain_pin = 12
+
 sizeLimit = 500 # em MB (ou Mb, não lembro)
+
+cte_on = 300 # tempo on sem detectar (em segundos)
 sensor_time = 4.7 # tempo (s) do sensor pir. Pode-se alterar o sensor para diminuir o tempo de "debounce"
 dht_time = 120 # tempo (s) entre uma leitura e outra do dht11
 size_log_time = 30
+rain_time = 30
+
 last_dht = time.time()
 last_size = time.time()
+last_rain = time.time()
 
 GPIO.setup(pir_pin, GPIO.IN)  # Pino de entrada para ler a saída do sensor PIR
 GPIO.setup(not_pin, GPIO.IN)   # Este Pino é o pino que ficará conectado a "Not" do Sensor PIR
 GPIO.setup(led_test_pin, GPIO.OUT) # Pino de saída para um led de test
-
+GPIO.setup(rain_pin,GPIO.IN)
 
 GPIO.setup(led2_test_pin, GPIO.OUT) # Para ver se o código ainda está rodando
 GPIO.output(led2_test_pin,1)        # Poderia colocar piscando sem parar para ver se está ligado ainda
@@ -68,6 +75,8 @@ GPIO.output(led2_test_pin,1)        # Poderia colocar piscando sem parar para ve
 # Chamando a função do sensor dht11
 dht11.sensor_dht_once()
 mfile.dht11_log()
+mfile.rain_log(GPIO.input(rain_pin))
+mfile.size_log(sizeLimit)
 
 # Primeiras fotos e vídeo
 
@@ -88,6 +97,14 @@ while(1):
     
 ##    if not no_rain.is_active:
 ##        print("It's raining - get the washing in!")
+##    if GPIO.input(rain_pin) == 1:
+##        print("tá sol")
+##    else:
+##        print("tá chuvendo")
+    if int(time.time() - last_rain) > rain_time:
+        print('rainlog')
+        mfile.rain_log(GPIO.input(rain_pin))
+        last_rain = time.time()
     
     if int(time.time()- last_dht) > dht_time:
         print('dhtlog')
