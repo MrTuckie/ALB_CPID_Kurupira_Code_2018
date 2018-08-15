@@ -169,10 +169,15 @@ while(1):
         print('rainlog')
         mfile.rain_log(GPIO.input(rain_pin))
         
-        sleep(10)
+        sleep(5)
         # Aqui deve ficar a opção para acionar um pino para desarmar a bateria.
         # Ou algo do tipo
-        os.system('/home/pi/Desktop/Kurupira/bash-script/kill_python.sh')
+        
+        mfile.off_log() # Diz que desligou
+        sleep(10)
+        os.system("shutdown 0")   # Desliga o RSP
+        
+        #os.system('/home/pi/Desktop/Kurupira/bash-script/kill_python.sh')
         
         
     sleep(0.5) # Para não ler infinitamente rápido
