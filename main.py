@@ -102,6 +102,41 @@ while(1):
     # Atualiza o tamanho atual da pasta multi
     b = int(sdir.get_size())
     
+    # Recebe o valor da entrada do pir
+    i = GPIO.input(pir_pin)
+    
+    # Se o movimento foi detectado
+    if i == 1: 
+        print ('Movimento detectado')
+        sleep(sensor_time) # Tempo para uma leitura e outra
+        i = GPIO.input(pir_pin) # Atualiza a leitura do pino na variável
+        
+        # Se continua detectado depois de sensor_time
+        if i == 1:
+            print ('Movimento novamente detectado')
+            camera.fotos() # Tira fotos
+            b = int(sdir.get_size()) # Atualiza o tamanho da pasta multi
+            print ("Espaço da pasta de multimidia: %dMB" % b) # Imprime para debugar
+            i = GPIO.input(pir_pin) # Atualiza a leitura do pino na variável novamente
+            
+            # Se continua detectado depois disso tudo
+            if i == 1:
+                camera.video() # Grava vídeo
+                b = int(sdir.get_size()) # Atualiza o tamanho da pasta multi
+                print ("Espaço da pasta de multimidia: %dMB" % b) # Imprime para debugar
+
+        last_pir = time.time() # Atualiza o tempo de detecção
+
+    elif (i == 0): # Caso sem movimento
+        print ('Sem movimento')
+        
+        # Se o intervalo sem movimento for maior que "n" segs
+        if int(time.time()- last_pir) > cte_on: 
+            mfile.off_log() # Diz que desligou
+            #time.sleep(10)
+            os.system("shutdown 0")   # Desliga o RSP
+            sleep(10)    
+    
     # Rain Log
     if int(time.time() - last_rain) > rain_time:
         print('rainlog')
@@ -140,38 +175,4 @@ while(1):
         os.system('/home/pi/Desktop/Kurupira/bash-script/kill_python.sh')
         
         
-    # Recebe o valor da entrada do pir
-    i = GPIO.input(pir_pin)
-    
-    # Se o movimento foi detectado
-    if i == 1: 
-        print ('Movimento detectado')
-        sleep(sensor_time) # Tempo para uma leitura e outra
-        i = GPIO.input(pir_pin) # Atualiza a leitura do pino na variável
-        
-        # Se continua detectado depois de sensor_time
-        if i == 1:
-            print ('Movimento novamente detectado')
-            camera.fotos() # Tira fotos
-            b = int(sdir.get_size()) # Atualiza o tamanho da pasta multi
-            print ("Espaço da pasta de multimidia: %dMB" % b) # Imprime para debugar
-            i = GPIO.input(pir_pin) # Atualiza a leitura do pino na variável novamente
-            
-            # Se continua detectado depois disso tudo
-            if i == 1:
-                camera.video() # Grava vídeo
-                b = int(sdir.get_size()) # Atualiza o tamanho da pasta multi
-                print ("Espaço da pasta de multimidia: %dMB" % b) # Imprime para debugar
-
-        last_pir = time.time() # Atualiza o tempo de detecção
-
-    else: # Caso sem movimento
-        print ('Sem movimento')
-        
-        # Se o intervalo sem movimento for maior que "n" segs
-        if int(time.time()- last_pir) > cte_on: 
-            mfile.off_log() # Diz que desligou
-            #time.sleep(10)
-            os.system("shutdown 0")   # Desliga o RSP
-            sleep(10)
     sleep(0.5) # Para não ler infinitamente rápido
