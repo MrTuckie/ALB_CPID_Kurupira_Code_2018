@@ -27,17 +27,22 @@ import mfile
 
 # Setup-------------------------------------------
 
-# Testes iniciais
+# Testes iniciais ---
+
 print ("Início de programa...")
 print (strftime("%d/%m/%y - %H:%M:%S"))
 
+
+# Indica que horas que ligou no arquivo.
 mfile.on_log()
 
-#sdir.get_size()
+# Atualiza o tempo de detecção pela primeira vez
+last = time.time()  
 
-last = time.time()  # Atualiza o tempo de detecção pela primeira vez
-b = int(sdir.get_size())
+# Recebe o tamanho do armazenamento inicial da pasta multi.
+b = int(sdir.get_size()) 
 print ("Espaço da pasta de multimidia: %dMB" % b)
+
 
 # Definindo a função dos pinos
 
@@ -52,14 +57,17 @@ led_test_pin = 40
 led2_test_pin = 38
 rain_pin = 12
 
-sizeLimit = 500 # em MB (ou Mb, não lembro)
+sizeLimit = 2000 # em MB (ou Mb, não lembro)
 
 cte_on = 300 # tempo on sem detectar (em segundos)
 sensor_time = 4.7 # tempo (s) do sensor pir. Pode-se alterar o sensor para diminuir o tempo de "debounce"
 dht_time = 120 # tempo (s) entre uma leitura e outra do dht11
-size_log_time = 30
-rain_time = 30
+size_log_time = 30 # tempo (s) entre a leitura do espaço da pasta multi
+rain_time = 600 # tempo (s) entre as leituras sobre o sensor de chuva
 
+# Ultimas variáveis sendo atualizadas para agora
+
+last_pir = time.time()
 last_dht = time.time()
 last_size = time.time()
 last_rain = time.time()
@@ -94,64 +102,76 @@ while(1):
     # Atualiza o tamanho atual da pasta multi
     b = int(sdir.get_size())
     
-    
-##    if not no_rain.is_active:
-##        print("It's raining - get the washing in!")
-##    if GPIO.input(rain_pin) == 1:
-##        print("tá sol")
-##    else:
-##        print("tá chuvendo")
+    # Rain Log
     if int(time.time() - last_rain) > rain_time:
         print('rainlog')
         mfile.rain_log(GPIO.input(rain_pin))
         last_rain = time.time()
     
+    
+    # Dht Log
     if int(time.time()- last_dht) > dht_time:
         print('dhtlog')
         mfile.dht11_log()
         last_dht = time.time()
-        
+    
+    
+    # Size Log
     if int(time.time()- last_size) > size_log_time:
         print('sizelog')
         mfile.size_log(sizeLimit)
         last_size = time.time()
         
-    if b > sizeLimit: # Se passou do limite de fotos estipulado
+        
+    # Se passou do limite de fotos estipulado
+    if b > sizeLimit: 
         print('dhtlog')
         mfile.dht11_log()
         
         print('sizelog')
         mfile.size_log(sizeLimit)
         
+        print('rainlog')
+        mfile.rain_log(GPIO.input(rain_pin))
+        
         sleep(10)
+        # Aqui deve ficar a opção para acionar um pino para desarmar a bateria.
+        # Ou algo do tipo
         os.system('/home/pi/Desktop/Kurupira/bash-script/kill_python.sh')
-
+        
+        
+    # Recebe o valor da entrada do pir
     i = GPIO.input(pir_pin)
-
-    if i == 1: # Movimento detectado
+    
+    # Se o movimento foi detectado
+    if i == 1: 
         print ('Movimento detectado')
-        sleep(sensor_time)
+        sleep(sensor_time) # Tempo para uma leitura e outra
         i = GPIO.input(pir_pin) # Atualiza a leitura do pino na variável
         
+        # Se continua detectado depois de sensor_time
         if i == 1:
             print ('Movimento novamente detectado')
-            camera.fotos()
-            b = int(sdir.get_size())
-            print ("Espaço da pasta de multimidia: %dMB" % b)
-            i = GPIO.input(pir_pin)
+            camera.fotos() # Tira fotos
+            b = int(sdir.get_size()) # Atualiza o tamanho da pasta multi
+            print ("Espaço da pasta de multimidia: %dMB" % b) # Imprime para debugar
+            i = GPIO.input(pir_pin) # Atualiza a leitura do pino na variável novamente
             
+            # Se continua detectado depois disso tudo
             if i == 1:
-                camera.video()
-                b = int(sdir.get_size())
-                print ("Espaço da pasta de multimidia: %dMB" % b)
+                camera.video() # Grava vídeo
+                b = int(sdir.get_size()) # Atualiza o tamanho da pasta multi
+                print ("Espaço da pasta de multimidia: %dMB" % b) # Imprime para debugar
 
-        last = time.time() # Atualiza o tempo de detecção
+        last_pir = time.time() # Atualiza o tempo de detecção
 
     else: # Caso sem movimento
         print ('Sem movimento')
-
-        if int(time.time()- last) > cte_on: # Se o intervalo sem movimento for maior que "n" segs
-            mfile.off_log()
+        
+        # Se o intervalo sem movimento for maior que "n" segs
+        if int(time.time()- last_pir) > cte_on: 
+            mfile.off_log() # Diz que desligou
             #time.sleep(10)
             os.system("shutdown 0")   # Desliga o RSP
+            sleep(10)
     sleep(0.5) # Para não ler infinitamente rápido
