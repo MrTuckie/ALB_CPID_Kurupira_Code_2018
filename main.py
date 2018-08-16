@@ -118,16 +118,16 @@ while(1):
             b = int(sdir.get_size()) # Atualiza o tamanho da pasta multi
             print ("Espaço da pasta de multimidia: %dMB" % b) # Imprime para debugar
             i = GPIO.input(pir_pin) # Atualiza a leitura do pino na variável novamente
-            
+            last_pir = time.time() # Atualiza o tempo de detecção
             # Se continua detectado depois disso tudo
             if i == 1:
                 camera.video() # Grava vídeo
                 b = int(sdir.get_size()) # Atualiza o tamanho da pasta multi
                 print ("Espaço da pasta de multimidia: %dMB" % b) # Imprime para debugar
 
-        last_pir = time.time() # Atualiza o tempo de detecção
+        # last_pir = time.time() # Atualiza o tempo de detecção
 
-    elif (i == 0): # Caso sem movimento
+    else: # Caso sem movimento
         print ('Sem movimento')
         
         # Se o intervalo sem movimento for maior que "n" segs
