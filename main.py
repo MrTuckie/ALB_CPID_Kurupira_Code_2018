@@ -62,7 +62,7 @@ sizeLimit = 2000 # em MB (ou Mb, não lembro)
 cte_on = 300 # tempo on sem detectar (em segundos)
 sensor_time = 4.7 # tempo (s) do sensor pir. Pode-se alterar o sensor para diminuir o tempo de "debounce"
 dht_time = 120 # tempo (s) entre uma leitura e outra do dht11
-size_log_time = 30 # tempo (s) entre a leitura do espaço da pasta multi
+size_log_time = 600 # tempo (s) entre a leitura do espaço da pasta multi
 rain_time = 600 # tempo (s) entre as leituras sobre o sensor de chuva
 
 # Ultimas variáveis sendo atualizadas para agora
