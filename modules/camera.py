@@ -8,6 +8,7 @@ from time import strftime
 def fotos():
     "Tira algumas fotos em um determinado tempo"
     camera = picamera.PiCamera() # Cria um objeto tipo picamera
+    camera.rotation = 270
     try: # Tenta tirar as "n"-fotos com a data e hora
         for x in range(5):
             time.sleep(0.2)
