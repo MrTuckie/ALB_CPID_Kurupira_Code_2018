@@ -8,7 +8,7 @@ from time import strftime
 def fotos():
     "Tira algumas fotos em um determinado tempo"
     camera = picamera.PiCamera() # Cria um objeto tipo picamera
-    camera.rotation = 270
+    camera.rotation = 270 # Gira a foto para 270 graus
     try: # Tenta tirar as "n"-fotos com a data e hora
         for x in range(5):
             time.sleep(0.2)
@@ -20,6 +20,7 @@ def fotos():
 def video():
     "Função para gravar um video de n-segundos"
     camera = picamera.PiCamera()
+    camera.rotation = 270 # Gira a foto para 270 graus
     try:
         print("gravando video...")
         camera.start_recording("/home/pi/Desktop/Kurupira/multi/videos_teste/%s.h264" % strftime("%d_%m_%y_%H:%M:%S"))
