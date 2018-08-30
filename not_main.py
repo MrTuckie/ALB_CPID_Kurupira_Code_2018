@@ -34,7 +34,7 @@ print (strftime("%d/%m/%y - %H:%M:%S"))
 
 
 # Indica que horas que ligou no arquivo.
-mfile.on_log()
+#mfile.on_log()
 
 # Atualiza o tempo de detecção pela primeira vez
 last = time.time()  
@@ -64,6 +64,8 @@ sensor_time = 4.7 # tempo (s) do sensor pir. Pode-se alterar o sensor para dimin
 dht_time = 120 # tempo (s) entre uma leitura e outra do dht11
 size_log_time = 600 # tempo (s) entre a leitura do espaço da pasta multi
 rain_time = 600 # tempo (s) entre as leituras sobre o sensor de chuva
+date_bug_time = 180 # tempo (s) para atualizar a hora em média
+
 
 # Ultimas variáveis sendo atualizadas para agora
 
@@ -71,6 +73,9 @@ last_pir = time.time()
 last_dht = time.time()
 last_size = time.time()
 last_rain = time.time()
+last_bug = time.time()
+
+aux = 0
 
 GPIO.setup(pir_pin, GPIO.IN)  # Pino de entrada para ler a saída do sensor PIR
 GPIO.setup(not_pin, GPIO.IN)   # Este Pino é o pino que ficará conectado a "Not" do Sensor PIR
@@ -90,6 +95,13 @@ GPIO.output(led2_test_pin,1)        # Poderia colocar piscando sem parar para ve
 
 if b < sizeLimit: # Verifica se há espaço
     camera.fotos()
+    sleep(1)
+    camera.fotos()
+    
+    # É mais uma espera para atualizar o tempo.
+    # Tem um problema que a raspberry demora a atualizar o tempo pela a internet.
+    sleep(5)
+    camera.fotos
 else:
     print("Lotado")
 #camera.video()
@@ -101,6 +113,15 @@ else:
 while(1):
     # Atualiza o tamanho atual da pasta multi
     b = int(sdir.get_size())
+    
+    if int(time.time()- last_bug) > date_bug_time : #tirando os bugs de atualização de horário
+        mfile.on_log()
+        last = time.time()
+        last_pir = time.time()
+        last_dht = time.time()
+        last_size = time.time()
+        last_rain = time.time()
+        last_bug = time.time()
     
     # Recebe o valor da entrada do pir
     i = GPIO.input(pir_pin)
@@ -127,7 +148,7 @@ while(1):
 
         # last_pir = time.time() # Atualiza o tempo de detecção
 
-    else: # Caso sem movimento
+    elif int(time.time()- last_bug) > date_bug_time :  # Caso sem movimento e se o tempo atualizou pela net
         print ('Sem movimento')
         
         # Se o intervalo sem movimento for maior que "n" segs

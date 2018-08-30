@@ -41,5 +41,8 @@ def rain_log(state):
     else:
         file.write(strftime("Seco: %d/%m/%y - %H:%M:%S\n"))
     file.close()
-
-    file.close()
+    
+def horario_corrigido():
+    file = open('/home/pi/Desktop/Kurupira/multi/logs/horario_log.txt','a')
+    file.write('1')
+    file.close
