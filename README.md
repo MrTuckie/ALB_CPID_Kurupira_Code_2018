@@ -1,3 +1,3 @@
 ## Projeto Kurupira
 
-Projeto desenvolvido por Arthur Lorencini Bergamaschi.
+Projeto desenvolvido por Arthur Lorencini Bergamaschi - UFES - BR.
