@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Projeto Kurupira - Arthur Lorencini Bergamaschi e Ruyhter Maximo
+# Projeto Kurupira - Arthur Lorencini Bergamaschi.
 
 # Bibliotecas
 
